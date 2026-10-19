@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Krithiv Shankar · Computer Vision &amp; Software Builder</title>
+  <meta name="description" content="Krithiv Shankar: B.Tech CSE student at SRM IST, Chennai. Builds browser image-processing pipelines, voice assistants, and EdTech games." />
+  <meta name="theme-color" content="#8a2b1c" />
+  <meta property="og:title" content="Krithiv Shankar" />
+  <meta property="og:description" content="Camera frames into G-code, voice into actions, compiler errors into a game." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Tamil:wdth,wght@75..125,300..800&family=Hind+Madurai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <a class="nav__mark" href="#top" aria-label="Krithiv Shankar, back to top">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="9" cy="9" r="1.6"/><circle cx="23" cy="9" r="1.6"/><circle cx="9" cy="23" r="1.6"/><circle cx="23" cy="23" r="1.6"/><path d="M16 3 C 27 3, 29 5, 29 16 C 29 27, 27 29, 16 29 C 5 29, 3 27, 3 16 C 3 5, 5 3, 16 3 Z M16 3 L29 16 L16 29 L3 16 Z"/></svg>
+      <span>Krithiv</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav__links">
+        <li><a href="#irontronics">Internship</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#record">Record</a></li>
+        <li><a class="nav__cta" href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="nav__toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+  </header>
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="#irontronics">Internship</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#record">Record</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <main id="main">
+    <!-- Threshold -->
+    <section class="threshold" id="top" aria-labelledby="hero-name">
+      <canvas class="kolam" id="kolam" aria-hidden="true"></canvas>
+      <div class="threshold__block" id="hero-block">
+        <h1 id="hero-name" class="display">Krithiv<br/>Shankar</h1>
+        <p class="threshold__lede">
+          Computer Science undergrad at SRM&nbsp;IST, Chennai. I write software that turns camera frames into G&#8209;code, voice into desktop actions, and compiler errors into a game.
+        </p>
+        <div class="threshold__actions">
+          <a class="btn btn--flour" href="#irontronics">See the work <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+          <a class="btn btn--line" href="mailto:krithiv.shankar@gmail.com">krithiv.shankar@gmail.com</a>
+        </div>
+      </div>
+      <div class="threshold__foot">
+        <p class="hint" id="kolam-hint">Tap between the dots to bend the line.</p>
+        <button class="chip-btn" id="kolam-shuffle" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg>
+          Draw a new kolam
+        </button>
+        <p class="hint hint--count" aria-live="polite"><span id="kolam-count">1</span> continuous <span id="kolam-word">line</span></p>
+      </div>
+    </section>
+
+    <!-- Irontronics -->
+    <section class="bench" id="irontronics" aria-labelledby="iron-title">
+      <canvas class="kolam-band" aria-hidden="true"></canvas>
+      <div class="wrap">
+        <div class="bench__intro">
+          <h2 id="iron-title" class="h2">Scan to G&#8209;code, in one click</h2>
+          <p class="meta"><strong>Irontronics</strong> · Summer Intern · May 2026 – Present</p>
+          <p class="lead">At Irontronics I own the full image-processing pipeline that reads metal part outlines and bolt-hole positions from camera frames and writes G&#8209;code: camera capture, Otsu thresholding, boundary tracing, hole detection, and the G&#8209;code engine. It runs as a zero-dependency browser application.</p>
+        </div>
+
+        <div class="rig" id="rig">
+          <div class="rig__left">
+          <div class="rig__stage">
+            <canvas id="rig-canvas" width="640" height="400" role="img" aria-label="Demo scan of a synthetic metal bracket, showing the current pipeline stage"></canvas>
+            <div class="rig__readout" aria-live="polite" id="rig-readout">Press run to scan the part.</div>
+          </div>
+            <p class="rig__note">This bench re-creates the pipeline in your browser on a synthetic part, with a demo scale of 0.5&nbsp;mm per pixel. The real tool runs on live camera frames with manual pixel-to-mm calibration.</p>
+          </div>
+          <div class="rig__side">
+            <ol class="steps" id="rig-steps">
+              <li><button type="button" data-step="0" aria-pressed="true"><span class="steps__dot"></span>Capture frame</button></li>
+              <li><button type="button" data-step="1" aria-pressed="false"><span class="steps__dot"></span>Otsu threshold</button></li>
+              <li><button type="button" data-step="2" aria-pressed="false"><span class="steps__dot"></span>Trace boundary</button></li>
+              <li><button type="button" data-step="3" aria-pressed="false"><span class="steps__dot"></span>Detect holes</button></li>
+              <li><button type="button" data-step="4" aria-pressed="false"><span class="steps__dot"></span>Generate G&#8209;code</button></li>
+            </ol>
+            <div class="rig__controls">
+              <button class="btn btn--flour" type="button" id="rig-run">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg> Run the scan
+              </button>
+              <button class="btn btn--line" type="button" id="rig-new">New part</button>
+            </div>
+            <pre class="gcode" id="rig-gcode" tabindex="0" aria-label="Generated G-code"><code>; G-code appears here after the scan.</code></pre>
+          </div>
+        </div>
+
+        <ul class="facts">
+          <li><span class="facts__k">Accuracy</span><span>Millimetre-level dimensional accuracy through manual pixel-to-mm calibration, using contour tracing and binary segmentation.</span></li>
+          <li><span class="facts__k">Impact</span><span>Replaces physical calliper workflows with a single-click scan-to-G-code pipeline, cutting manual measurement and CAM setup time on custom metal parts.</span></li>
+          <li><span class="facts__k">Next</span><span>Editing the generated G-code file to make design improvements.</span></li>
+          <li><span class="facts__k">Stack</span><span class="tags">HTML · CSS3 · Canvas API · WebRTC · Blob API · Python · JavaScript · React · TypeScript</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects" id="projects" aria-labelledby="projects-title">
+      <canvas class="kolam-band" aria-hidden="true"></canvas>
+      <div class="wrap">
+        <h2 id="projects-title" class="h2 h2--big">Two projects<br/>from this year</h2>
+
+        <article class="project" id="friday" aria-labelledby="friday-title">
+          <header class="project__head">
+            <h3 id="friday-title" class="h3">Friday</h3>
+            <p class="meta">Voice-controlled desktop assistant · August 2026</p>
+          </header>
+          <div class="project__body">
+            <p class="lead">A Python AI assistant, inspired by the assistant in <cite>Iron Man</cite>, that automates everyday computer tasks through hands-free commands. It pairs voice recognition and text-to-speech with a desktop UI and tool integrations, and it is a foundation for future automation features.</p>
+            <figure class="flow" aria-label="Friday's pipeline: voice recognition, LLM, tool integrations, text-to-speech, desktop UI">
+              <svg class="flow__svg" viewBox="0 30 1000 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <path class="flow__line" id="friday-path" d="M40 110 C 80 110, 80 144, 130 144 A 34 34 0 0 0 130 76 A 34 34 0 0 0 130 144 C 170 110, 260 144, 310 144 A 34 34 0 0 0 310 76 A 34 34 0 0 0 310 144 C 350 110, 450 144, 500 144 A 34 34 0 0 0 500 76 A 34 34 0 0 0 500 144 C 540 110, 640 144, 690 144 A 34 34 0 0 0 690 76 A 34 34 0 0 0 690 144 C 730 110, 820 144, 870 144 A 34 34 0 0 0 870 76 A 34 34 0 0 0 870 144 C 920 144, 930 110, 960 110"/>
+                <g class="flow__nodes">
+                  <circle cx="130" cy="110" r="10"/><circle cx="310" cy="110" r="10"/><circle cx="500" cy="110" r="10"/><circle cx="690" cy="110" r="10"/><circle cx="870" cy="110" r="10"/>
+                </g>
+                <circle class="flow__pulse" r="9" cx="40" cy="110"/>
+              </svg>
+              <ol class="flow__labels">
+                <li><strong>Hear</strong><span>VOSK · faster-whisper</span></li>
+                <li><strong>Think</strong><span>LLM API</span></li>
+                <li><strong>Act</strong><span>Tool integrations</span></li>
+                <li><strong>Speak</strong><span>pyttsx3</span></li>
+                <li><strong>Show</strong><span>PySide6 · PyQt</span></li>
+              </ol>
+            </figure>
+          </div>
+        </article>
+
+        <article class="project project--odyssey" id="odyssey" aria-labelledby="odyssey-title">
+          <header class="project__head">
+            <h3 id="odyssey-title" class="h3">Debug Odyssey</h3>
+            <p class="meta">Story-driven EdTech game · September 2026 · Finalist, Celestia 2.0</p>
+          </header>
+          <div class="project__body project__body--split">
+            <div>
+              <p class="lead">A web game that teaches beginner programmers to read, decode, and fix compiler errors across five major languages. An immersive 50-level campaign replaces panic with structured problem-solving, building real debugging confidence.</p>
+              <p>Under the hood: a Monaco editor workspace on the front end, and a secure, sandboxed FastAPI execution backend running multi-language compilers, containerised with Docker and deployed across Vercel and Google Cloud Run. Next up: a 2D world with visual task completion in Phaser.js.</p>
+              <div class="campaign" aria-label="The 50-level campaign">
+                <svg viewBox="0 0 400 168" id="campaign-svg" aria-hidden="true"></svg>
+                <p class="campaign__cap"><span id="campaign-n">50</span> levels in the campaign</p>
+              </div>
+            </div>
+            <div class="decoder" id="decoder">
+              <div class="decoder__tabs" role="tablist" aria-label="Debugging steps">
+                <button role="tab" id="dt-0" aria-controls="dp" aria-selected="true" data-i="0">Read</button>
+                <button role="tab" id="dt-1" aria-controls="dp" aria-selected="false" data-i="1" tabindex="-1">Decode</button>
+                <button role="tab" id="dt-2" aria-controls="dp" aria-selected="false" data-i="2" tabindex="-1">Fix</button>
+              </div>
+              <div class="decoder__panel" id="dp" role="tabpanel" aria-labelledby="dt-0">
+                <pre class="code" id="decoder-code"></pre>
+                <p class="decoder__say" id="decoder-say"></p>
+              </div>
+              <p class="decoder__note">An example of the read, decode, fix habit the game trains.</p>
+            </div>
+          </div>
+          <p class="tags tags--row">HTML5 · CSS3 · Monaco Editor · FastAPI · Uvicorn / Gunicorn · Python · JavaScript · Java · C++ · Docker · GitHub · Vercel · Google Cloud Run</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="ledger-sec" id="skills" aria-labelledby="skills-title">
+      <canvas class="kolam-band" aria-hidden="true"></canvas>
+      <div class="wrap">
+        <h2 id="skills-title" class="h2">The toolbox</h2>
+        <p class="sub">Tools marked with a dot appear in the work above. Hover or focus one to see where.</p>
+        <dl class="ledger" id="skills-ledger">
+          <div class="ledger__row"><dt>Languages</dt><dd><span data-used="Friday, Debug Odyssey, Irontronics">Python</span><span>C</span><span data-used="Debug Odyssey, Irontronics">HTML</span><span data-used="Debug Odyssey, Irontronics">CSS</span><span>Rust</span></dd></div>
+          <div class="ledger__row"><dt>Frameworks</dt><dd><span>Django</span><span>Flask</span><span data-used="Debug Odyssey">FastAPI</span><span>Streamlit</span><span>Tailwind CSS</span></dd></div>
+          <div class="ledger__row"><dt>Libraries</dt><dd><span data-used="Irontronics">React</span><span>NumPy</span><span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span><span>CatBoost</span><span>OpenCV</span></dd></div>
+          <div class="ledger__row"><dt>Technologies</dt><dd><span>REST APIs</span><span>Machine Learning</span><span>Agentic AI</span><span>Version Control</span><span>Microsoft SQL Server</span></dd></div>
+          <div class="ledger__row"><dt>Tools</dt><dd><span>Vite</span><span>Jupyter Notebook</span><span>Figma</span><span>SQLite</span><span>Supabase</span><span>Google Colab</span></dd></div>
+          <div class="ledger__row"><dt>Cloud &amp; dev</dt><dd><span data-used="Debug Odyssey">Docker</span><span data-used="Debug Odyssey">Git</span><span data-used="Debug Odyssey">GitHub</span><span>VS Code</span><span>Antigravity</span></dd></div>
+        </dl>
+        <p class="ledger__used" id="ledger-used" aria-live="polite">&nbsp;</p>
+      </div>
+    </section>
+
+    <!-- Record -->
+    <section class="ledger-sec ledger-sec--stone" id="record" aria-labelledby="record-title">
+      <canvas class="kolam-band" aria-hidden="true"></canvas>
+      <div class="wrap">
+        <h2 id="record-title" class="h2">On the record</h2>
+        <div class="record">
+          <div class="record__group">
+            <h3 class="h4">Education</h3>
+            <ul class="rows">
+              <li>
+                <span class="rows__when">Aug 2024 – Present</span>
+                <span class="rows__what"><strong>SRM Institute of Science and Technology, Ramapuram</strong>B.Tech in Computer Science and Engineering</span>
+                <span class="rows__stamp">CGPA 8.88<small>/10</small></span>
+              </li>
+            </ul>
+          </div>
+          <div class="record__group">
+            <h3 class="h4">Hackathons</h3>
+            <ul class="rows">
+              <li>
+                <span class="rows__when">Celestia 2.0</span>
+                <span class="rows__what"><strong>Team why · Debug Odyssey</strong>Teaching debugging to beginners (EdTech)</span>
+                <span class="rows__stamp rows__stamp--hot">Finalist</span>
+              </li>
+              <li>
+                <span class="rows__when">Sensora 2.0</span>
+                <span class="rows__what"><strong>Team Triple Trouble · AuthenSight</strong>Intelligent document verification and fraud detection</span>
+                              </li>
+              <li>
+                <span class="rows__when">Adobe University Hackathon 2026</span>
+                <span class="rows__what"><strong>Brand Visibility case study</strong>Case-study round</span>
+                <span class="rows__stamp">Participated</span>
+              </li>
+            </ul>
+          </div>
+          <div class="record__group">
+            <h3 class="h4">Beyond the code</h3>
+            <ul class="rows">
+              <li><span class="rows__when">Freelance</span><span class="rows__what"><strong>Web developer</strong>Customised websites built to request for multiple clients</span></li>
+              <li><span class="rows__when">Design</span><span class="rows__what"><strong>Poster designer</strong>Posters and promotional creatives for official events across organisations</span></li>
+              <li><span class="rows__when">Volunteer</span><span class="rows__what"><strong>Green Global (NGO)</strong>Community-focused activities and outreach</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="close" id="contact" aria-labelledby="contact-title">
+      <canvas class="kolam kolam--close" id="kolam-close" aria-hidden="true"></canvas>
+      <div class="wrap close__inner">
+        <h2 id="contact-title" class="display display--close">Let’s build<br/>the next one.</h2>
+        <p class="lead">Email is the quickest way to reach me. GitHub, LinkedIn, phone, and my résumé are one click below.</p>
+        <div class="close__mail">
+          <a class="close__email" href="mailto:krithiv.shankar@gmail.com">krithiv.shankar@gmail.com</a>
+          <button class="chip-btn" type="button" id="copy-email" data-copy="krithiv.shankar@gmail.com">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <ul class="links">
+          <li><a href="https://github.com/Nintrophix" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>GitHub<span class="links__sub">Nintrophix</span></a></li>
+          <li><a href="https://www.linkedin.com/in/krithiv-shankar" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></svg>LinkedIn<span class="links__sub">krithiv-shankar</span></a></li>
+          <li><a href="tel:+919243118671"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>Phone<span class="links__sub">92431 18671</span></a></li>
+          <li><a href="/Krithiv_Shankar_Resume.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Résumé<span class="links__sub">PDF</span></a></li>
+        </ul>
+      </div>
+      <footer class="foot wrap">
+        <p>Krithiv Shankar · Chennai</p>
+        <a href="#top">Back to the top <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+      </footer>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
