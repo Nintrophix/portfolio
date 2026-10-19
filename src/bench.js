@@ -3,7 +3,8 @@
 
 const PW = 320, PH = 200;      // processing resolution
 const MM_PER_PX = 0.5;         // demo calibration
-const C = { flour: '#f5efe4', turmeric: '#f0aa1e', kumkum: '#e8456f', leaf: '#5fb37a', stone: '#0f0c0a', dim: 'rgba(245,239,228,.18)' };
+// one hue only: the design system's green scale
+const C = { flour: '#E7EFE3', turmeric: '#8FB582', kumkum: '#D3E2CC', leaf: '#6A9A5C', stone: '#0D1E10', dim: 'rgba(231,239,227,.18)' };
 
 function rng(seed) {
   let s = seed >>> 0 || 7;
@@ -17,9 +18,7 @@ function makeFrame(seed) {
   cv.width = PW; cv.height = PH;
   const g = cv.getContext('2d');
 
-  const bg = g.createLinearGradient(0, 0, PW, PH);
-  bg.addColorStop(0, '#2c2621'); bg.addColorStop(1, '#3b332c');
-  g.fillStyle = bg; g.fillRect(0, 0, PW, PH);
+  g.fillStyle = '#284727'; g.fillRect(0, 0, PW, PH);
 
   // part outline: one of three bracket shapes
   const kind = Math.floor(r() * 3);
@@ -47,8 +46,7 @@ function makeFrame(seed) {
   }
   path.closePath();
 
-  const metal = g.createLinearGradient(x0, y0, x0 + w, y0 + h);
-  metal.addColorStop(0, '#c9c4bc'); metal.addColorStop(0.5, '#b3aea6'); metal.addColorStop(1, '#a29d95');
+  const metal = '#B6CFAB';
   g.save();
   g.shadowColor = 'rgba(0,0,0,.45)'; g.shadowBlur = 8; g.shadowOffsetY = 3;
   g.fillStyle = metal; g.fill(path);
@@ -68,7 +66,7 @@ function makeFrame(seed) {
     if (ok && holes.every((o) => Math.hypot(o.x - hx, o.y - hy) > o.r + hr + 10)) holes.push({ x: hx, y: hy, r: hr });
   }
   for (const o of holes) {
-    g.fillStyle = '#332c26'; g.beginPath(); g.arc(o.x, o.y, o.r, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#284727'; g.beginPath(); g.arc(o.x, o.y, o.r, 0, Math.PI * 2); g.fill();
     g.strokeStyle = 'rgba(255,255,255,.25)'; g.lineWidth = 1; g.beginPath(); g.arc(o.x, o.y, o.r + 0.5, Math.PI * 0.9, Math.PI * 1.7); g.stroke();
   }
 
@@ -263,13 +261,13 @@ export function initBench(root) {
     const im = g.createImageData(PW, PH);
     for (let i = 0; i < PW * PH; i++) {
       const v = res.bin[i];
-      im.data[i * 4] = v ? 245 : 22; im.data[i * 4 + 1] = v ? 239 : 18; im.data[i * 4 + 2] = v ? 228 : 15; im.data[i * 4 + 3] = 255;
+      im.data[i * 4] = v ? 231 : 13; im.data[i * 4 + 1] = v ? 239 : 30; im.data[i * 4 + 2] = v ? 227 : 16; im.data[i * 4 + 3] = 255;
     }
     g.putImageData(im, 0, 0);
   }
 
   function viewfinder() {
-    ctx.strokeStyle = 'rgba(245,239,228,.55)'; ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(231,239,227,.55)'; ctx.lineWidth = 2;
     const m = 18, l = 26, W = LW, H = LH;
     for (const [x, y, sx, sy] of [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]]) {
       ctx.beginPath(); ctx.moveTo(x, y + sy * l); ctx.lineTo(x, y); ctx.lineTo(x + sx * l, y); ctx.stroke();
@@ -278,9 +276,9 @@ export function initBench(root) {
 
   function histogram() {
     const w = 150, h = 56, x = LW - w - 16, y = 16;
-    ctx.fillStyle = 'rgba(15,12,10,.85)'; ctx.fillRect(x - 8, y - 8, w + 16, h + 30);
+    ctx.fillStyle = 'rgba(13,30,16,.85)'; ctx.fillRect(x - 8, y - 8, w + 16, h + 30);
     const max = Math.max(...res.hist);
-    ctx.fillStyle = 'rgba(245,239,228,.7)';
+    ctx.fillStyle = 'rgba(231,239,227,.7)';
     for (let t = 0; t < 256; t++) {
       const bh = Math.sqrt(res.hist[t] / max) * h;
       ctx.fillRect(x + (t / 256) * w, y + h - bh, w / 256 + 0.3, bh);
@@ -288,7 +286,7 @@ export function initBench(root) {
     const tx = x + (res.T / 256) * w;
     ctx.strokeStyle = C.turmeric; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(tx, y - 2); ctx.lineTo(tx, y + h + 2); ctx.stroke();
-    ctx.fillStyle = C.turmeric; ctx.font = '600 12px "JetBrains Mono", monospace';
+    ctx.fillStyle = C.turmeric; ctx.font = '600 12px ui-monospace, Consolas, monospace';
     ctx.fillText(`T = ${res.T}`, Math.min(tx + 4, x + w - 46), y + h + 16);
   }
 
@@ -323,7 +321,7 @@ export function initBench(root) {
       }
       return;
     }
-    contourPath(1); ctx.strokeStyle = st === 4 ? 'rgba(245,239,228,.35)' : C.flour; ctx.lineWidth = 3; ctx.stroke();
+    contourPath(1); ctx.strokeStyle = st === 4 ? 'rgba(231,239,227,.35)' : C.flour; ctx.lineWidth = 3; ctx.stroke();
 
     if (st === 3) {
       res.holes.forEach((h, i) => {
@@ -335,10 +333,10 @@ export function initBench(root) {
         ctx.beginPath(); ctx.arc(x, y, rr + 3, 0, Math.PI * 2); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(x - rr - 9, y); ctx.lineTo(x + rr + 9, y); ctx.moveTo(x, y - rr - 9); ctx.lineTo(x, y + rr + 9); ctx.stroke();
         const label = `Ø ${(h.d * MM_PER_PX).toFixed(1)} mm`;
-        ctx.font = '600 13px "JetBrains Mono", monospace';
+        ctx.font = '600 13px ui-monospace, Consolas, monospace';
         const tw = ctx.measureText(label).width;
         const lx = Math.min(x + rr + 8, W - tw - 14), ly = y - rr - 10;
-        ctx.fillStyle = 'rgba(15,12,10,.85)'; ctx.fillRect(lx - 5, ly - 14, tw + 10, 20);
+        ctx.fillStyle = 'rgba(13,30,16,.85)'; ctx.fillRect(lx - 5, ly - 14, tw + 10, 20);
         ctx.fillStyle = C.turmeric; ctx.fillText(label, lx, ly);
         ctx.globalAlpha = 1;
       });
@@ -354,7 +352,7 @@ export function initBench(root) {
     ctx.fillStyle = C.flour;
     for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(sp[i][0] * S, sp[i][1] * S, 3.2, 0, Math.PI * 2); ctx.fill(); }
     if (t > 0.7) {
-      ctx.setLineDash([6, 6]); ctx.strokeStyle = 'rgba(245,239,228,.5)'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 6]); ctx.strokeStyle = 'rgba(231,239,227,.5)'; ctx.lineWidth = 1.5;
       ctx.beginPath(); let px = sp[0][0] * S, py = sp[0][1] * S; ctx.moveTo(px, py);
       for (const h of res.holes) ctx.lineTo(h.x * S, h.y * S);
       ctx.stroke(); ctx.setLineDash([]);
@@ -411,7 +409,7 @@ export function initBench(root) {
     }
     out.parentElement.scrollTop = 0;
     running = false; runBtn.disabled = false; newBtn.disabled = false;
-    runBtn.lastChild.textContent = ' Run it again';
+    { const r = runBtn.querySelector('.btn__roll'); r.dataset.label = 'Run it again'; r.querySelector('.btn__txt').textContent = 'Run it again'; }
   }
 
   steps.forEach((b, i) => b.addEventListener('click', () => { if (!running) setStage(i, { animate: true }); }));
