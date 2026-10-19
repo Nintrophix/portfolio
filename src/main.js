@@ -281,3 +281,29 @@ $('#copy-email').addEventListener('click', async (e) => {
   showToast('Email copied to your clipboard');
   setTimeout(() => setLabel(roll, 'Copy'), 2200);
 });
+
+/* ---------- Theme switcher: light / dark from the green scale ---------- */
+(function theme() {
+  const root = document.documentElement;
+  const btn = $('#theme-toggle');
+  const meta = $('meta[name="theme-color"]');
+  const apply = (t) => {
+    root.dataset.theme = t;
+    const dark = t === 'dark';
+    btn.setAttribute('aria-pressed', String(dark));
+    btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    meta.setAttribute('content', dark ? '#0D1E10' : '#17301A');
+  };
+  apply(root.dataset.theme === 'dark' ? 'dark' : 'light');
+  btn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('ks-theme', next); } catch { /* storage blocked */ }
+  });
+  // follow the system until the visitor picks one
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (m) => {
+    let saved = null;
+    try { saved = localStorage.getItem('ks-theme'); } catch { /* storage blocked */ }
+    if (!saved) apply(m.matches ? 'dark' : 'light');
+  });
+})();
