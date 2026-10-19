@@ -1,4 +1,3 @@
-import { Kolam, textRects } from './kolam.js';
 import { initBench } from './bench.js';
 
 document.documentElement.classList.add('js');
@@ -6,91 +5,124 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-/* ---------- Hero kolam ---------- */
-const heroBlock = $('#hero-block');
-const countEl = $('#kolam-count');
-const wordEl = $('#kolam-word');
-const hintEl = $('#kolam-hint');
-let touched = false;
+function storeGet(k) { try { return sessionStorage.getItem(k); } catch { return null; } }
+function storeSet(k, v) { try { sessionStorage.setItem(k, v); } catch { /* storage blocked */ } }
 
-function startHero() {
-  const hero = new Kolam($('#kolam'), {
-    exclude: () => [
-      ...textRects($('#hero-name')),
-      ...textRects($('.threshold__lede')),
-      ...$$('.threshold__actions .btn').map((b) => b.getBoundingClientRect()),
-      ...$$('.threshold__foot > *').map((b) => b.getBoundingClientRect()),
-      $('#nav').getBoundingClientRect(),
-    ],
-    onChange: (n) => {
-      countEl.textContent = n;
-      wordEl.textContent = n === 1 ? 'line' : 'lines';
-      if (touched) hintEl.textContent = n === 1 ? 'One unbroken line again, the way it is drawn by hand.' : 'The line split. Tap where two colours meet to join them.';
-    },
-  });
-  $('#kolam').addEventListener('click', () => { touched = true; }, { capture: true });
-  $('#kolam-shuffle').addEventListener('click', () => { touched = false; hintEl.textContent = 'Tap between the dots to bend the line.'; hero.shuffle(); });
-  hero.pourIn();
+/* ---------- split text into letters (keeps child spans for colour) ---------- */
+function splitLetters(root) {
+  let i = 0;
+  const walk = (node) => {
+    for (const child of [...node.childNodes]) {
+      if (child.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        for (const ch of child.textContent) {
+          if (ch === ' ') { frag.appendChild(document.createTextNode(' ')); continue; }
+          const span = document.createElement('span');
+          span.className = 'letter'; span.textContent = ch; span.style.setProperty('--i', i++);
+          frag.appendChild(span);
+        }
+        child.replaceWith(frag);
+      } else if (child.nodeType === 1) walk(child);
+    }
+  };
+  walk(root);
 }
+$$('[data-letters]').forEach(splitLetters);
 
-/* ---------- Closing kolam (decorative) ---------- */
-function startClose() {
-  const canvas = $('#kolam-close');
-  const k = new Kolam(canvas, {
-    interactive: false,
-    exclude: () => [
-      ...textRects($('#contact-title')),
-      ...$$('.close__inner > p, .close__mail > *, .links a, .foot > *').map((e) => e.getBoundingClientRect()),
-    ],
-  });
-  k.randomise(777);
-  k.progress = reduced ? 1 : 0;
-  k.draw();
-  const io = new IntersectionObserver((es) => {
-    if (es.some((e) => e.isIntersecting)) { io.disconnect(); k.layout(); k.randomise(777); k.pourIn(3200); }
-  }, { threshold: 0.25 });
-  io.observe(canvas);
-}
-
-/* ---------- Seam bands: a one-line kolam opens each section ---------- */
-function startBands() {
-  $$('.kolam-band').forEach((canvas, i) => {
-    const k = new Kolam(canvas, { interactive: false });
-    k.randomise(101 + i * 37);
-    k.draw();
-    const io = new IntersectionObserver((es) => {
-      if (es.some((e) => e.isIntersecting)) { io.disconnect(); k.progress = 0; k.pourIn(2200); }
-    }, { threshold: 0.5 });
-    io.observe(canvas);
-  });
-}
-
-(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
-  startHero();
-  startBands();
-  startClose();
+/* ---------- rolling button labels ---------- */
+$$('.btn__roll').forEach((el) => {
+  const txt = document.createElement('span');
+  txt.className = 'btn__txt'; txt.textContent = el.textContent.trim();
+  el.textContent = ''; el.appendChild(txt);
 });
+function setLabel(el, text) { el.dataset.label = text; el.querySelector('.btn__txt').textContent = text; }
+
+/* ---------- scrambling nav labels ---------- */
+const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function scramble(el, duration = 600) {
+  const final = el.dataset.text || (el.dataset.text = el.textContent);
+  if (reduced) { el.textContent = final; return; }
+  const t0 = performance.now();
+  const tick = (now) => {
+    const t = Math.min(1, Math.max(0, now - t0) / duration);
+    const fixed = Math.floor(final.length * t);
+    el.textContent = final.split('').map((c, k) => (k < fixed || c === ' ' ? c : GLYPHS[(Math.random() * 26) | 0])).join('');
+    if (t < 1) requestAnimationFrame(tick); else el.textContent = final;
+  };
+  requestAnimationFrame(tick);
+}
+$$('[data-scramble]').forEach((a) => a.addEventListener('mouseenter', () => scramble(a, 400)));
+
+/* ---------- headings and panels reveal on scroll ---------- */
+function observeReveals() {
+  const els = $$('.mask, .reveal');
+  if (reduced) { els.forEach((e) => e.classList.add('is-in')); return; }
+  const io = new IntersectionObserver((es) => {
+    for (const e of es) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+  }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+  els.forEach((e) => io.observe(e));
+}
+
+/* ---------- load intro, then the page plays in ---------- */
+const intro = $('#intro');
+const heroLetters = $('#hero-name .letters');
+function startPage() {
+  document.body.classList.add('is-ready');
+  heroLetters.classList.add('is-in');
+  setTimeout(() => $$('[data-scramble]').forEach((a, k) => setTimeout(() => scramble(a), k * 80)), 300);
+  setTimeout(observeReveals, 200);
+}
+if (reduced || storeGet('ks-intro')) {
+  intro.classList.add('is-gone');
+  startPage();
+} else {
+  document.body.classList.add('is-locked');
+  requestAnimationFrame(() => $('.intro__name').classList.add('is-in'));
+  const finish = () => {
+    if (intro.classList.contains('is-out')) return;
+    intro.classList.add('is-out');
+    document.body.classList.remove('is-locked');
+    storeSet('ks-intro', '1');
+    setTimeout(startPage, 350);
+    setTimeout(() => intro.classList.add('is-gone'), 950);
+  };
+  setTimeout(finish, 2300);
+  intro.addEventListener('click', finish);
+  addEventListener('keydown', finish, { once: true });
+}
+
+/* ---------- orb parallax + scroll-linked name bands ---------- */
+const orbs = $$('.orb').map((el) => ({ el, speed: parseFloat(el.dataset.speed) || 0 }));
+const bands = $$('.band').map((el) => ({ el, dir: +el.dataset.dir }));
+let ticking = false;
+function onScrollFx() {
+  ticking = false;
+  const vh = innerHeight;
+  for (const o of orbs) {
+    const r = o.el.parentElement.getBoundingClientRect();
+    if (r.bottom < -200 || r.top > vh + 200) continue;
+    o.el.style.transform = `translate3d(0, ${(-r.top * o.speed).toFixed(1)}px, 0)`;
+  }
+  for (const b of bands) {
+    const r = b.el.getBoundingClientRect();
+    const p = (vh - r.top) / (vh + r.height);
+    b.el.style.transform = `translate3d(${(b.dir * (p * 30 - 20)).toFixed(2)}%, 0, 0)`;
+  }
+}
+if (!reduced) {
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScrollFx); } }, { passive: true });
+  onScrollFx();
+}
 
 /* ---------- Irontronics bench ---------- */
-initBench($('#irontronics'));
+initBench($('#experience'));
 
-/* ---------- Nav: scrolled state, section highlighting, mobile menu ---------- */
-const nav = $('#nav');
-const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 40);
-addEventListener('scroll', onScroll, { passive: true });
-onScroll();
-
-const darkSections = ['irontronics', 'record'];
+/* ---------- nav: current section, mobile menu ---------- */
 const links = $$('.nav__links a');
 const sectionIO = new IntersectionObserver((es) => {
-  for (const e of es) {
-    if (!e.isIntersecting) continue;
-    const id = e.target.id;
-    nav.classList.toggle('is-dark', darkSections.includes(id));
-    links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === `#${id}`)));
-  }
+  for (const e of es) if (e.isIntersecting) links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === `#${e.target.id}`)));
 }, { rootMargin: '-45% 0px -50% 0px' });
-['top', 'irontronics', 'projects', 'skills', 'record', 'contact'].forEach((id) => sectionIO.observe(document.getElementById(id)));
+['top', 'experience', 'projects', 'skills', 'record', 'contact'].forEach((id) => sectionIO.observe(document.getElementById(id)));
 
 const toggle = $('.nav__toggle');
 const menu = $('#mobile-menu');
@@ -98,53 +130,24 @@ function setMenu(open) {
   toggle.setAttribute('aria-expanded', String(open));
   toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   menu.hidden = !open;
-  document.body.style.overflow = open ? 'hidden' : '';
+  document.body.classList.toggle('is-locked', open);
   if (open) menu.querySelector('a').focus();
 }
 toggle.addEventListener('click', () => setMenu(menu.hidden));
 menu.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); toggle.focus(); } });
-matchMedia('(min-width: 821px)').addEventListener('change', (m) => { if (m.matches) setMenu(false); });
+matchMedia('(min-width: 861px)').addEventListener('change', (m) => { if (m.matches) setMenu(false); });
 
-/* ---------- Friday pipeline ---------- */
+/* ---------- Friday: the pipeline lights stage by stage while in view ---------- */
 (function friday() {
-  const path = $('#friday-path');
-  const pulse = $('.flow__pulse');
-  const nodes = $$('.flow__nodes circle');
-  const len = path.getTotalLength();
-  // where along the line each stage's loop begins
-  const nodeAt = nodes.map((n) => {
-    const cx = +n.getAttribute('cx');
-    for (let l = 0; l <= len; l += 4) if (Math.abs(path.getPointAtLength(l).x - cx) < 2 && path.getPointAtLength(l).y > 130) return l;
-    return 0;
-  });
-  if (reduced) { nodes.forEach((n) => n.classList.add('is-on')); pulse.style.display = 'none'; return; }
-  path.style.strokeDasharray = len;
-  path.style.strokeDashoffset = len;
-  let raf = 0, visible = false, t0 = 0, drawn = false;
-  const loop = (now) => {
-    if (!visible) return;
-    if (!t0) t0 = now;
-    const el = now - t0;
-    if (!drawn) {
-      const t = Math.min(1, el / 1600), e = 1 - Math.pow(1 - t, 3);
-      path.style.strokeDashoffset = len * (1 - e);
-      if (t >= 1) { drawn = true; t0 = now; }
-    }
-    const t = drawn ? ((now - t0) % 4200) / 4200 : 0;
-    const p = path.getPointAtLength(len * t);
-    pulse.setAttribute('cx', p.x); pulse.setAttribute('cy', p.y);
-    pulse.style.opacity = drawn ? 1 : 0;
-    nodes.forEach((n, i) => n.classList.toggle('is-on', drawn && len * t >= nodeAt[i]));
-    raf = requestAnimationFrame(loop);
-  };
+  const stages = $$('.pipe li');
+  if (reduced) return;
+  let k = 0, timer = 0;
+  const step = () => { stages.forEach((s, i) => s.classList.toggle('is-on', i === k)); k = (k + 1) % stages.length; };
   new IntersectionObserver((es) => {
-    visible = es[0].isIntersecting;
-    cancelAnimationFrame(raf);
-    // a pour interrupted by scrolling away finishes rather than restarting
-    if (!visible && t0 && !drawn) { drawn = true; path.style.strokeDashoffset = 0; }
-    if (visible) { t0 = 0; raf = requestAnimationFrame(loop); }
-  }, { threshold: 0.35 }).observe($('.flow'));
+    clearInterval(timer);
+    if (es[0].isIntersecting) { step(); timer = setInterval(step, 900); }
+  }, { threshold: 0.4 }).observe($('.pipe'));
 })();
 
 /* ---------- Debug Odyssey: campaign of 50 dots ---------- */
@@ -244,15 +247,14 @@ matchMedia('(min-width: 821px)').addEventListener('change', (m) => { if (m.match
 })();
 
 /* ---------- Skills: where each tool is used ---------- */
-(function ledger() {
+(function skills() {
   const used = $('#ledger-used');
   const idle = ' ';
-  used.textContent = idle;
   $$('#skills-ledger span[data-used]').forEach((s) => {
     s.tabIndex = 0;
-    const showIt = () => { used.innerHTML = `<strong>${s.textContent}</strong> is used in ${s.dataset.used}.`; };
-    s.addEventListener('mouseenter', showIt);
-    s.addEventListener('focus', showIt);
+    const show = () => { used.innerHTML = `<strong>${s.textContent}</strong> is used in ${s.dataset.used}.`; };
+    s.addEventListener('mouseenter', show);
+    s.addEventListener('focus', show);
     s.addEventListener('mouseleave', () => { used.textContent = idle; });
     s.addEventListener('blur', () => { used.textContent = idle; });
   });
@@ -274,15 +276,8 @@ $('#copy-email').addEventListener('click', async (e) => {
     const ta = Object.assign(document.createElement('textarea'), { value: text });
     document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
   }
-  btn.querySelector('span').textContent = 'Copied';
+  const roll = btn.querySelector('.btn__roll');
+  setLabel(roll, 'Copied');
   showToast('Email copied to your clipboard');
-  setTimeout(() => { btn.querySelector('span').textContent = 'Copy'; }, 2200);
+  setTimeout(() => setLabel(roll, 'Copy'), 2200);
 });
-
-/* ---------- Reveals: one entrance grammar, content visible without JS ---------- */
-const revealTargets = $$('.bench__intro, .rig, .facts, .projects .h2, .project__head, .project__body, .tags--row, .ledger-sec .h2, .ledger, .record__group, .close__inner > *');
-revealTargets.forEach((el) => el.classList.add('reveal'));
-const rio = new IntersectionObserver((es) => {
-  for (const e of es) if (e.isIntersecting) { e.target.classList.add('is-in'); rio.unobserve(e.target); }
-}, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-revealTargets.forEach((el) => rio.observe(el));
