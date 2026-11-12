@@ -138,64 +138,17 @@ menu.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); toggle.focus(); } });
 matchMedia('(min-width: 861px)').addEventListener('change', (m) => { if (m.matches) setMenu(false); });
 
-/* ---------- Friday: the pipeline lights stage by stage while in view ---------- */
-(function friday() {
-  const stages = $$('.pipe li');
+/* ---------- Project pipelines light stage by stage while in view ---------- */
+$$('.pipe').forEach((pipe) => {
+  const stages = [...pipe.children];
   if (reduced) return;
   let k = 0, timer = 0;
   const step = () => { stages.forEach((s, i) => s.classList.toggle('is-on', i === k)); k = (k + 1) % stages.length; };
   new IntersectionObserver((es) => {
     clearInterval(timer);
     if (es[0].isIntersecting) { step(); timer = setInterval(step, 900); }
-  }, { threshold: 0.4 }).observe($('.pipe'));
-})();
-
-/* ---------- Debug Odyssey: campaign of 50 dots ---------- */
-(function campaign() {
-  const svg = $('#campaign-svg');
-  const ns = 'http://www.w3.org/2000/svg';
-  const cols = 10, rows = 5, gx = 38, gy = 34, ox = 29, oy = 16;
-  const pts = [];
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    const cc = r % 2 ? cols - 1 - c : c;
-    pts.push([ox + cc * gx, oy + r * gy]);
-  }
-  // the route snakes level to level, turning in a loop at each row end
-  let d = `M${pts[0][0]} ${pts[0][1]}`;
-  for (let i = 1; i < pts.length; i++) {
-    const [x, y] = pts[i], [px, py] = pts[i - 1];
-    if (y !== py) { const side = px > 200 ? 1 : -1; d += ` C${px + side * 24} ${py}, ${x + side * 24} ${y}, ${x} ${y}`; }
-    else d += ` L${x} ${y}`;
-  }
-  const line = document.createElementNS(ns, 'path');
-  line.setAttribute('d', d); line.setAttribute('class', 'c-line');
-  svg.appendChild(line);
-  const dots = pts.map(([x, y]) => {
-    const c = document.createElementNS(ns, 'circle');
-    c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 5); c.setAttribute('class', 'c-dot');
-    svg.appendChild(c); return c;
-  });
-  const len = line.getTotalLength();
-  const n = $('#campaign-n');
-  if (reduced) { dots.forEach((c) => c.classList.add('is-on')); return; }
-  line.style.strokeDasharray = len; line.style.strokeDashoffset = len;
-  n.textContent = '0';
-  const io = new IntersectionObserver((es) => {
-    if (!es[0].isIntersecting) return;
-    io.disconnect();
-    const t0 = performance.now();
-    const tick = (now) => {
-      const t = Math.min(1, Math.max(0, now - t0) / 2600), e = 1 - Math.pow(1 - t, 3);
-      line.style.strokeDashoffset = len * (1 - e);
-      const k = Math.round(e * 50);
-      dots.forEach((c, i) => c.classList.toggle('is-on', i < k));
-      n.textContent = k;
-      if (t < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, { threshold: 0.6 });
-  io.observe(svg);
-})();
+  }, { threshold: 0.4 }).observe(pipe);
+});
 
 /* ---------- Debug Odyssey: read / decode / fix ---------- */
 (function decoder() {

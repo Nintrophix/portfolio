@@ -18,21 +18,22 @@ Recruiters screening for internships/roles, developers judging technical depth, 
 
 ## Product Purpose
 
-Personal portfolio of Krithiv Shankar, B.Tech CSE student (SRM IST Ramapuram, Aug 2024–present, CGPA 8.88/10). It should make clear within seconds what he builds, how he builds it, and how to reach him.
+Personal portfolio of Krithiv Shankar, B.Tech CSE student (SRM IST Ramapuram, Aug 2024 to present, CGPA 8.88/10). It should make clear within seconds what he builds, how he builds it, and how to reach him. Live at https://krithivshankar.vercel.app/.
 
 ## Positioning
 
-He builds software that turns the physical world into machine instructions: camera frames into G-code at millimetre accuracy (Irontronics), voice into desktop actions (Friday), compiler errors into a teachable story (Debug Odyssey). Zero-dependency browser pipelines and hands-on image processing are his distinctive mechanism.
+He builds software across computer vision (measuring metal parts from camera frames at millimetre accuracy, Irontronics), voice interfaces (Friday), EdTech (Debug Odyssey, teaching compiler-error debugging) and full-stack web (Lost and Found Hub, real-time campus portal).
 
 ## Capabilities and Constraints
 
-- Contact: krithiv.shankar@gmail.com, phone 9243118671, github.com/Nintrophix, linkedin.com/in/krithiv-shankar.
-- Facts come only from the resume. No live demo URLs, screenshots, metrics, or repo links per project were provided.
+- Contact on the site: krithiv.shankar@gmail.com, github.com/Nintrophix, linkedin.com/in/krithiv-shankar. **The phone number must not appear on the site** (user instruction, 2026-11-12).
+- Project links: Friday https://github.com/Nintrophix/Friday; Debug Odyssey https://bug-labs-beta-pink.vercel.app/; Lost and Found Hub https://lost-found-hub-4grb.onrender.com/ and https://github.com/Nintrophix/Lost-Found-Hub.
+- Facts come only from the current resume (Krithiv_Shankar_Resume.pdf, Nov 2026). It no longer mentions G-code, a 50-level campaign, or the Irontronics impact lines; do not reintroduce them.
 
 ## Evidence on Hand
 
-- Resume PDF (source of truth): experience, two projects, skills, three hackathons, three extra-curriculars.
-- No photos, logos, project screenshots, testimonials, or numeric impact figures beyond CGPA. Do not fabricate any.
+- Resume PDF (source of truth): experience (Irontronics, Logic Play), three projects with links, education incl. 12th and 10th boards, skills, three hackathons, two certifications, three extra-curriculars.
+- No photos, logos, project screenshots, testimonials, or numeric impact figures beyond grades. Do not fabricate any.
 
 ## Product Principles
 
