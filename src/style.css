@@ -541,3 +541,48 @@ body, .sec--lift, .glass, .nav { transition: background-color var(--dur-base) va
 :root[data-theme="dark"] .theme-toggle .i-moon { transform: none; opacity: 1; }
 @media (max-width: 860px) { .theme-toggle { margin-left: auto; } .nav .nav__cta { margin-left: 0; } }
 :root[data-theme="dark"] .hero__lede b { color: var(--green-300); }
+
+/* ---------- résumé update: links, Logic Play, schools, certifications ---------- */
+.card__links { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+.card__link {
+  display: inline-flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: 0 14px;
+  border-radius: var(--radius-btn); border: var(--border-w) solid var(--green-300); color: var(--green-50);
+  font-size: var(--fs-micro); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tr-caps); text-decoration: none;
+  transition: background-color var(--dur-base) var(--ease-expo), color var(--dur-base) var(--ease-expo), border-color var(--dur-base) var(--ease-expo);
+}
+.card__link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.card__link:hover { background: var(--green-200); border-color: var(--green-200); color: var(--green-950); }
+.card__link:focus-visible { outline-color: var(--green-300); }
+
+.pipe { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+.panel--tight { margin-top: var(--space-6); padding-top: var(--space-6); padding-bottom: var(--space-6); }
+.panel--tight .panel__head .micro { margin-bottom: var(--space-3); }
+.bullets { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-3); max-width: 70ch; }
+.bullets li { position: relative; padding-left: 22px; font-size: var(--fs-lead); line-height: 1.5; }
+.bullets li::before { content: ""; position: absolute; left: 0; top: .62em; width: 10px; height: 2px; background: var(--accent); }
+
+.record { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 1120px; }
+.list--schools { margin-top: var(--space-3); border-top: 1px solid var(--border-panel); }
+.list--schools li:first-child { padding-top: var(--space-4); }
+.tag--quiet { background: transparent; color: var(--ink); border: 1px solid var(--border-panel); }
+
+@media (max-width: 960px) { .record { grid-template-columns: 1fr; } }
+
+/* polish */
+.nav__mark { display: inline-flex; align-items: center; min-height: 40px; padding: 0 4px; margin-left: -4px; }
+@media (max-width: 640px) {
+  .card__head { flex-direction: column; gap: var(--space-2); }
+  .card__index { font-size: 32px; }
+  .pipe { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact__email { font-size: 18px; overflow-wrap: normal; }
+}
+
+/* contrast floor (light theme): one step darker on the same green scale */
+:root:not([data-theme="dark"]) .hero__last { color: var(--green-600); }
+:root:not([data-theme="dark"]) .hero__lede b { color: var(--green-700); }
+:root:not([data-theme="dark"]) .service__n,
+:root:not([data-theme="dark"]) .steps__n { color: var(--green-600); }
+:root[data-theme="dark"] .service__n, :root[data-theme="dark"] .steps__n { color: var(--green-400); }
+a.btn:hover { color: var(--action-fg); } a.btn--outline:hover { color: var(--ink-inverse); }
+:root:not([data-theme="dark"]) .steps button[aria-pressed="true"] .steps__n { color: var(--green-300); }

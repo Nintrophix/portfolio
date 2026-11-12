@@ -1,5 +1,5 @@
-// A small, real re-creation of the scan-to-G-code idea on a synthetic part:
-// grayscale -> blur -> Otsu threshold -> Moore boundary trace -> hole labelling -> G-code.
+// A small, real illustration of measuring a part from a camera frame, on a synthetic part:
+// grayscale -> blur -> binary segmentation (Otsu) -> contour tracing (Moore) -> bolt-hole labelling -> mm.
 
 const PW = 320, PH = 200;      // processing resolution
 const MM_PER_PX = 0.5;         // demo calibration
@@ -198,38 +198,29 @@ function simplify(pts, eps) {
   return A.slice(0, -1).concat(B.slice(0, -1));
 }
 
-function gcode(res) {
+function measure(res) {
   const { simple, holes, box } = res;
-  const X = (x) => ((x - box.minX) * MM_PER_PX).toFixed(2);
-  const Y = (y) => ((box.maxY - y) * MM_PER_PX).toFixed(2);
+  const X = (x) => ((x - box.minX) * MM_PER_PX).toFixed(1);
+  const Y = (y) => ((box.maxY - y) * MM_PER_PX).toFixed(1);
   const L = [];
-  L.push('; demo output, synthetic part');
-  L.push(`; part ${((box.maxX - box.minX) * MM_PER_PX).toFixed(1)} x ${((box.maxY - box.minY) * MM_PER_PX).toFixed(1)} mm`);
-  L.push('G21 ; millimetres');
-  L.push('G90 ; absolute positioning');
-  L.push('G0 Z5.00');
-  L.push('; profile');
-  L.push(`G0 X${X(simple[0][0])} Y${Y(simple[0][1])}`);
-  L.push('G1 Z-1.00 F200');
-  for (let i = 1; i < simple.length; i++) L.push(`G1 X${X(simple[i][0])} Y${Y(simple[i][1])} F600`);
-  L.push(`G1 X${X(simple[0][0])} Y${Y(simple[0][1])}`);
-  L.push('G0 Z5.00');
+  L.push('; demo measurements, synthetic part');
+  L.push(`; scale ${MM_PER_PX.toFixed(2)} mm per px (demo calibration)`);
+  L.push(`outline   ${((box.maxX - box.minX) * MM_PER_PX).toFixed(1)} x ${((box.maxY - box.minY) * MM_PER_PX).toFixed(1)} mm`);
+  L.push(`vertices  ${simple.length}`);
+  L.push(`holes     ${holes.length}`);
   holes.forEach((h, i) => {
-    L.push(`; hole ${i + 1}, dia ${(h.d * MM_PER_PX).toFixed(1)} mm`);
-    L.push(`G0 X${X(h.x)} Y${Y(h.y)}`);
-    L.push('G1 Z-1.00 F150');
-    L.push('G0 Z5.00');
+    L.push(`hole ${i + 1}    x ${X(h.x)}  y ${Y(h.y)}  dia ${(h.d * MM_PER_PX).toFixed(1)} mm`);
   });
-  L.push('M2 ; end');
+  L.push('; origin at the outline\'s lower-left corner');
   return L;
 }
 
 function hl(line) {
   const esc = line.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  const [code, ...c] = esc.split(';');
-  const comment = c.length ? `<span class="g-c">;${c.join(';')}</span>` : '';
-  const body = code.replace(/\b([GM]\d+)\b/g, '<span class="g-g">$1</span>').replace(/([XYZF])(-?[\d.]+)/g, '$1<span class="g-n">$2</span>');
-  return body + comment;
+  if (esc.startsWith(';')) return `<span class="g-c">${esc}</span>`;
+  return esc
+    .replace(/^(outline|vertices|holes|hole \d+)/, '<span class="g-g">$1</span>')
+    .replace(/(-?\d+\.\d+|\b\d+\b(?![^<]*>))/g, '<span class="g-n">$1</span>');
 }
 
 /* ---------- the bench UI ---------- */
@@ -256,7 +247,7 @@ export function initBench(root) {
   function load() {
     frame = makeFrame(seed);
     res = process(frame);
-    lines = gcode(res);
+    lines = measure(res);
     const g = binCanvas.getContext('2d');
     const im = g.createImageData(PW, PH);
     for (let i = 0; i < PW * PH; i++) {
@@ -342,22 +333,31 @@ export function initBench(root) {
       });
       return;
     }
-    // st 4: toolpath
-    const sp = res.simple;
-    const n = Math.max(2, Math.floor(sp.length * Math.min(1, t * 1.4)));
-    ctx.beginPath(); ctx.moveTo(sp[0][0] * S, sp[0][1] * S);
-    for (let i = 1; i < n; i++) ctx.lineTo(sp[i][0] * S, sp[i][1] * S);
-    if (n === sp.length) ctx.closePath();
-    ctx.strokeStyle = C.turmeric; ctx.lineWidth = 3; ctx.stroke();
-    ctx.fillStyle = C.flour;
-    for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(sp[i][0] * S, sp[i][1] * S, 3.2, 0, Math.PI * 2); ctx.fill(); }
-    if (t > 0.7) {
-      ctx.setLineDash([6, 6]); ctx.strokeStyle = 'rgba(231,239,227,.5)'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); let px = sp[0][0] * S, py = sp[0][1] * S; ctx.moveTo(px, py);
-      for (const h of res.holes) ctx.lineTo(h.x * S, h.y * S);
-      ctx.stroke(); ctx.setLineDash([]);
-      for (const h of res.holes) { ctx.fillStyle = C.kumkum; ctx.beginPath(); ctx.arc(h.x * S, h.y * S, 5, 0, Math.PI * 2); ctx.fill(); }
+    // st 4: measurements in mm
+    const b = res.box, x0 = b.minX * S, y0 = b.minY * S, x1 = b.maxX * S, y1 = b.maxY * S;
+    const a = Math.min(1, t * 1.4);
+    ctx.globalAlpha = a;
+    ctx.strokeStyle = C.turmeric; ctx.fillStyle = C.turmeric; ctx.lineWidth = 1.5;
+    const dim = (ax, ay, bx, by, label, vertical) => {
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+      for (const [px, py] of [[ax, ay], [bx, by]]) {
+        ctx.beginPath();
+        if (vertical) { ctx.moveTo(px - 6, py); ctx.lineTo(px + 6, py); } else { ctx.moveTo(px, py - 6); ctx.lineTo(px, py + 6); }
+        ctx.stroke();
+      }
+      ctx.font = '600 13px ui-monospace, Consolas, monospace';
+      const tw = ctx.measureText(label).width;
+      const mx = (ax + bx) / 2, my = (ay + by) / 2;
+      ctx.save(); ctx.fillStyle = 'rgba(13,30,16,.85)';
+      ctx.fillRect(mx - tw / 2 - 5, my - 11, tw + 10, 20); ctx.restore();
+      ctx.fillText(label, mx - tw / 2, my + 4);
+    };
+    dim(x0, y1 + 18, x1, y1 + 18, `${((b.maxX - b.minX) * MM_PER_PX).toFixed(1)} mm`, false);
+    dim(x1 + 18, y0, x1 + 18, y1, `${((b.maxY - b.minY) * MM_PER_PX).toFixed(1)} mm`, true);
+    for (const h of res.holes) {
+      ctx.fillStyle = C.kumkum; ctx.beginPath(); ctx.arc(h.x * S, h.y * S, 4, 0, Math.PI * 2); ctx.fill();
     }
+    ctx.globalAlpha = 1;
   }
 
   function say(st) {
@@ -368,7 +368,7 @@ export function initBench(root) {
       `Otsu threshold T = ${res.T} · ${(res.on * 100).toFixed(0)}% of pixels are metal`,
       `Boundary: ${res.contour.length} px traced, ${res.simple.length} vertices`,
       `${res.holes.length} holes · ${res.holes.map((h) => (h.d * MM_PER_PX).toFixed(1)).join(', ')} mm`,
-      `Part ${wmm} × ${hmm} mm · ${lines.length} lines of G-code`,
+      `Part ${wmm} × ${hmm} mm · ${res.holes.length} holes located`,
     ][st];
     readout.textContent = msg;
   }
@@ -378,7 +378,7 @@ export function initBench(root) {
     steps.forEach((b, i) => { b.setAttribute('aria-pressed', String(i === st)); b.classList.toggle('is-done', i < st); });
     say(st);
     if (st === 4) out.innerHTML = lines.map(hl).join('\n');
-    else if (st < 4 && !running) out.innerHTML = '<span class="g-c">; G-code appears here after the scan.</span>';
+    else if (st < 4 && !running) out.innerHTML = '<span class="g-c">; Measurements appear here after the scan.</span>';
     cancelAnimationFrame(anim);
     if (!animate || reduced || st === 0) { render(st, 1); return Promise.resolve(); }
     return new Promise((done) => {

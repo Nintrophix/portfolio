@@ -2,3 +2,26 @@ node_modules
 dist
 .impeccable/review
 .impeccable/live
+
+# Logs and caches
+*.log
+npm-debug.log*
+.vite
+.cache
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Editor and OS files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tool output
+graphify-out/
+.claude/settings.local.json

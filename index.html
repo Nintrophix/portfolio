@@ -4,10 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Krithiv Shankar · Computer Vision &amp; Software Builder</title>
-  <meta name="description" content="Krithiv Shankar: B.Tech CSE student at SRM IST, Chennai. Builds browser image-processing pipelines, voice assistants, and EdTech games." />
+  <meta name="description" content="Krithiv Shankar: B.Tech CSE student at SRM IST, Chennai. Builds computer-vision measurement tools, a voice desktop assistant, an EdTech debugging platform, and a campus Lost &amp; Found portal." />
+  <link rel="canonical" href="https://krithivshankar.vercel.app/" />
+  <meta property="og:url" content="https://krithivshankar.vercel.app/" />
+  <meta property="og:type" content="website" />
   <meta name="theme-color" content="#17301A" />
   <meta property="og:title" content="Krithiv Shankar" />
-  <meta property="og:description" content="Camera frames into G-code, voice into actions, compiler errors into a game." />
+  <meta property="og:description" content="Computer vision, voice assistants, EdTech and full-stack web, by Krithiv Shankar." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,7 +73,7 @@
 
         <div class="hero__row">
           <div class="glass glass--strong hero__panel reveal">
-            <p class="hero__lede">Computer Science student at SRM IST, Chennai. I build software that turns <b>camera frames into G&#8209;code</b>, <b>voice into desktop actions</b>, and <b>compiler errors into a game</b>.</p>
+            <p class="hero__lede">Computer Science student at SRM IST, Chennai. I build software that turns <b>camera frames into millimetre measurements</b>, <b>voice into desktop actions</b>, and <b>compiler errors into lessons</b>.</p>
             <div class="hero__actions">
               <a class="btn btn--lg" href="#contact"><span class="btn__roll" data-label="Contact me">Contact me</span></a>
               <a class="btn btn--lg btn--outline" href="#projects"><span class="btn__roll" data-label="See work">See work</span></a>
@@ -79,8 +82,8 @@
 
           <ul class="glass hero__facts reveal" aria-label="At a glance">
             <li><span class="micro">Now</span><strong>Summer Intern, Irontronics</strong><span>May 2026 to present</span></li>
+            <li><span class="micro">Also now</span><strong>Core Member, Logic Play</strong><span>November 2026 to present</span></li>
             <li><span class="micro">Studying</span><strong>B.Tech CSE, SRM IST</strong><span>CGPA 8.88 / 10</span></li>
-            <li><span class="micro">Recently</span><strong>Finalist, Celestia 2.0</strong><span>With Debug Odyssey</span></li>
           </ul>
         </div>
       </div>
@@ -101,10 +104,10 @@
         <header class="panel__head">
           <div>
             <p class="micro">Irontronics · Summer Intern · May 2026 to present</p>
-            <h3 class="display display--s">Scan to G&#8209;code in one click</h3>
+            <h3 class="display display--s">Measuring metal parts from a camera frame</h3>
           </div>
         </header>
-        <p class="lead">I own the full image-processing pipeline that reads metal part outlines and bolt-hole positions from camera frames and writes G&#8209;code: camera capture, Otsu thresholding, boundary tracing, hole detection, and the G&#8209;code engine. It runs as a zero-dependency browser application.</p>
+        <p class="lead">I worked on a project that scans metal part outlines and bolt-hole positions from camera frames using contour tracing and binary segmentation, achieving millimetre-level dimensional accuracy through manual pixel-to-mm calibration.</p>
 
         <div class="rig" id="rig">
           <div class="rig__left">
@@ -112,30 +115,38 @@
               <canvas id="rig-canvas" width="640" height="400" role="img" aria-label="Demo scan of a synthetic metal bracket, showing the current pipeline stage"></canvas>
               <div class="rig__readout" aria-live="polite" id="rig-readout">Press run to scan the part.</div>
             </div>
-            <p class="rig__note">A re-creation of the pipeline running in your browser on a synthetic part, at a demo scale of 0.5&nbsp;mm per pixel. The real tool runs on live camera frames with manual pixel-to-mm calibration.</p>
+            <p class="rig__note">An illustration of the technique running in your browser on a synthetic part, at a demo scale of 0.5&nbsp;mm per pixel. The real project works on live camera frames with manual pixel-to-mm calibration.</p>
           </div>
           <div class="rig__side">
             <ol class="steps" id="rig-steps">
               <li><button type="button" data-step="0" aria-pressed="true"><span class="steps__n">01</span>Capture frame</button></li>
-              <li><button type="button" data-step="1" aria-pressed="false"><span class="steps__n">02</span>Otsu threshold</button></li>
-              <li><button type="button" data-step="2" aria-pressed="false"><span class="steps__n">03</span>Trace boundary</button></li>
-              <li><button type="button" data-step="3" aria-pressed="false"><span class="steps__n">04</span>Detect holes</button></li>
-              <li><button type="button" data-step="4" aria-pressed="false"><span class="steps__n">05</span>Generate G&#8209;code</button></li>
+              <li><button type="button" data-step="1" aria-pressed="false"><span class="steps__n">02</span>Binary segmentation</button></li>
+              <li><button type="button" data-step="2" aria-pressed="false"><span class="steps__n">03</span>Contour tracing</button></li>
+              <li><button type="button" data-step="3" aria-pressed="false"><span class="steps__n">04</span>Find bolt holes</button></li>
+              <li><button type="button" data-step="4" aria-pressed="false"><span class="steps__n">05</span>Measure in mm</button></li>
             </ol>
             <div class="rig__controls">
               <button class="btn" type="button" id="rig-run"><span class="btn__roll" data-label="Run the scan">Run the scan</span></button>
               <button class="btn btn--outline" type="button" id="rig-new"><span class="btn__roll" data-label="New part">New part</span></button>
             </div>
-            <pre class="gcode" id="rig-gcode" tabindex="0" aria-label="Generated G-code"><code>; G-code appears here after the scan.</code></pre>
+            <pre class="gcode" id="rig-gcode" tabindex="0" aria-label="Measurements in millimetres"><code>; Measurements appear here after the scan.</code></pre>
           </div>
         </div>
 
         <dl class="rows">
-          <div class="row"><dt class="micro">Accuracy</dt><dd>Millimetre-level dimensional accuracy through manual pixel-to-mm calibration, using contour tracing and binary segmentation.</dd></div>
-          <div class="row"><dt class="micro">Impact</dt><dd>Replaces physical calliper workflows with a single-click scan-to-G-code pipeline, cutting manual measurement and CAM setup time on custom metal parts.</dd></div>
-          <div class="row"><dt class="micro">Next</dt><dd>Editing the generated G-code file to make design improvements.</dd></div>
           <div class="row"><dt class="micro">Stack</dt><dd>HTML, CSS3, Canvas API, WebRTC, Blob API, Python, JavaScript, React, TypeScript</dd></div>
         </dl>
+      </div>
+
+      <div class="glass glass--strong panel panel--tight">
+        <header class="panel__head">
+          <p class="micro">Logic Play · Core Member · November 2026 to present</p>
+          <h3 class="display display--s">Building for club projects and events</h3>
+        </header>
+        <ul class="bullets">
+          <li>Built and optimised interactive features, algorithms, and logic systems for club projects and event platforms.</li>
+          <li>Collaborated with cross-functional teams to debug, test, and deploy software solutions for club initiatives.</li>
+        </ul>
       </div>
     </section>
 
@@ -152,16 +163,17 @@
             <div>
               <h3 id="friday-title" class="display display--s">Friday</h3>
               <p class="micro">Voice-controlled desktop assistant · August 2026</p>
+              <p class="card__links"><a class="card__link" href="https://github.com/Nintrophix/Friday" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg><span>GitHub</span></a></p>
             </div>
           </header>
-          <p class="lead">A Python AI assistant, inspired by the assistant in <cite>Iron Man</cite>, that automates everyday computer tasks through hands-free commands. It pairs voice recognition and text-to-speech with a desktop UI and tool integrations, and is a foundation for future automation features.</p>
+          <p class="lead">A voice-controlled desktop assistant, inspired by the assistant in <cite>Iron Man</cite>, that automates everyday computer tasks. It simplifies computer interaction through hands-free commands and provides a foundation for future automation features.</p>
           <ol class="pipe" aria-label="Friday's pipeline">
             <li><span class="micro">Hear</span><strong>VOSK, faster-whisper</strong></li>
             <li><span class="micro">Think</span><strong>LLM API</strong></li>
-            <li><span class="micro">Act</span><strong>Tool integrations</strong></li>
             <li><span class="micro">Speak</span><strong>pyttsx3</strong></li>
             <li><span class="micro">Show</span><strong>PySide6, PyQt</strong></li>
           </ol>
+          <p class="stackline">Python · LLM API · VOSK · faster-whisper · PySide6 · PyQt · pyttsx3</p>
         </article>
 
         <article class="glass glass--dark card" id="odyssey" aria-labelledby="odyssey-title" style="--top:140px">
@@ -169,17 +181,13 @@
             <span class="card__index">02</span>
             <div>
               <h3 id="odyssey-title" class="display display--s">Debug Odyssey</h3>
-              <p class="micro">Story-driven EdTech game · September 2026 · Finalist, Celestia 2.0</p>
+              <p class="micro">Story-driven full-stack EdTech platform · September 2026 · Finalist, Celestia 2.0</p>
+              <p class="card__links"><a class="card__link" href="https://bug-labs-beta-pink.vercel.app/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span>Live site</span></a></p>
             </div>
           </header>
           <div class="odyssey">
             <div>
-              <p class="lead">A web game that teaches beginner programmers to read, decode, and fix compiler errors across five major languages. A 50-level campaign replaces panic with structured problem-solving and builds real debugging confidence.</p>
-              <p>A Monaco editor workspace sits on a secure, sandboxed FastAPI execution backend running multi-language compilers, containerised with Docker and deployed on Vercel and Google Cloud Run. Next up: a 2D world with visual task completion in Phaser.js.</p>
-              <div class="campaign" aria-label="The 50-level campaign">
-                <svg viewBox="0 0 400 168" id="campaign-svg" aria-hidden="true"></svg>
-                <p class="micro"><span id="campaign-n">50</span> levels in the campaign</p>
-              </div>
+              <p class="lead">A story-driven, full-stack EdTech platform that teaches beginner programmers how to systematically read, decode, and fix compiler errors across five major programming languages.</p>
             </div>
             <div class="decoder" id="decoder">
               <div class="decoder__tabs" role="tablist" aria-label="Debugging steps">
@@ -196,6 +204,26 @@
           </div>
           <p class="stackline">HTML5 · CSS3 · Monaco Editor · FastAPI · Uvicorn / Gunicorn · Python · JavaScript · Java · C++ · Docker · GitHub · Vercel · Google Cloud Run</p>
         </article>
+
+        <article class="glass glass--dark card" id="lost-found" aria-labelledby="lf-title" style="--top:184px">
+          <header class="card__head">
+            <span class="card__index">03</span>
+            <div>
+              <h3 id="lf-title" class="display display--s">Lost and Found Hub</h3>
+              <p class="micro">Full-stack campus portal · November 2026</p>
+              <p class="card__links"><a class="card__link" href="https://lost-found-hub-4grb.onrender.com/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg><span>Live site</span></a><a class="card__link" href="https://github.com/Nintrophix/Lost-Found-Hub" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg><span>GitHub</span></a></p>
+            </div>
+          </header>
+          <p class="lead">A full-stack campus Lost and Found portal built with Node.js, Express, PostgreSQL on Supabase and Socket.io. Students can report, search, claim and recover items, with real-time private chat.</p>
+          <ol class="pipe" aria-label="What students can do">
+            <li><span class="micro">Report</span><strong>Post a lost or found item</strong></li>
+            <li><span class="micro">Search</span><strong>Find matching items</strong></li>
+            <li><span class="micro">Claim</span><strong>Request an item</strong></li>
+            <li><span class="micro">Recover</span><strong>Get it back</strong></li>
+            <li><span class="micro">Chat</span><strong>Real-time, private</strong></li>
+          </ol>
+          <p class="stackline">Node.js · Express 4 · Socket.io · Multer · EJS · Tailwind CSS · vanilla JS · PostgreSQL on Supabase · bcrypt · Helmet · custom CSRF middleware · Sharp · nodemon · Render · GitHub</p>
+        </article>
       </div>
     </section>
 
@@ -207,12 +235,12 @@
         <h2 id="skills-title" class="display display--l mask"><span>Skills</span></h2>
         <p class="sub">Tools marked with a dot appear in the work above. Hover or focus one to see where.</p>
         <div class="services" id="skills-ledger">
-          <div class="service"><span class="service__n">01</span><h3>Languages</h3><p class="tools"><span data-used="Friday, Debug Odyssey, Irontronics">Python</span><span>C</span><span data-used="Debug Odyssey, Irontronics">HTML</span><span data-used="Debug Odyssey, Irontronics">CSS</span><span>Rust</span></p></div>
-          <div class="service"><span class="service__n">02</span><h3>Frameworks</h3><p class="tools"><span>Django</span><span>Flask</span><span data-used="Debug Odyssey">FastAPI</span><span>Streamlit</span><span>Tailwind CSS</span></p></div>
-          <div class="service"><span class="service__n">03</span><h3>Libraries</h3><p class="tools"><span data-used="Irontronics">React</span><span>NumPy</span><span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span><span>CatBoost</span><span>OpenCV</span></p></div>
-          <div class="service"><span class="service__n">04</span><h3>Technologies</h3><p class="tools"><span>REST APIs</span><span>Machine Learning</span><span>Agentic AI</span><span>Version Control</span><span>Microsoft SQL Server</span></p></div>
-          <div class="service"><span class="service__n">05</span><h3>Tools</h3><p class="tools"><span>Vite</span><span>Jupyter Notebook</span><span>Figma</span><span>SQLite</span><span>Supabase</span><span>Google Colab</span></p></div>
-          <div class="service"><span class="service__n">06</span><h3>Cloud &amp; dev</h3><p class="tools"><span data-used="Debug Odyssey">Docker</span><span data-used="Debug Odyssey">Git</span><span data-used="Debug Odyssey">GitHub</span><span>VS Code</span><span>Antigravity</span></p></div>
+          <div class="service"><span class="service__n">01</span><h3>Languages</h3><p class="tools"><span data-used="Friday, Debug Odyssey, Irontronics">Python</span><span>C</span><span data-used="Debug Odyssey, Irontronics">HTML</span><span data-used="Debug Odyssey, Irontronics">CSS</span><span>Rust</span><span data-used="Debug Odyssey, Irontronics, Lost and Found Hub">JavaScript</span><span data-used="Lost and Found Hub">SQL</span></p></div>
+          <div class="service"><span class="service__n">02</span><h3>Frameworks</h3><p class="tools"><span>Django</span><span>Flask</span><span data-used="Debug Odyssey">FastAPI</span><span>Streamlit</span><span data-used="Lost and Found Hub">Tailwind CSS</span><span data-used="Lost and Found Hub">Node.js</span><span data-used="Lost and Found Hub">Express.js</span></p></div>
+          <div class="service"><span class="service__n">03</span><h3>Libraries</h3><p class="tools"><span data-used="Irontronics">React</span><span>NumPy</span><span>Pandas</span><span>Scikit-learn</span><span>XGBoost</span><span>CatBoost</span><span>OpenCV</span><span data-used="Lost and Found Hub">Socket.io</span></p></div>
+          <div class="service"><span class="service__n">04</span><h3>Technologies</h3><p class="tools"><span>REST APIs</span><span>Machine Learning</span><span>Agentic AI</span><span>Version Control</span><span>Microsoft SQL Server</span><span data-used="Lost and Found Hub">WebSockets</span><span>Full Text Search</span><span data-used="Lost and Found Hub">Authentication</span><span data-used="Lost and Found Hub">Web Security</span><span>ntfy</span></p></div>
+          <div class="service"><span class="service__n">05</span><h3>Tools</h3><p class="tools"><span>Vite</span><span>Jupyter Notebook</span><span>Figma</span><span>SQLite</span><span data-used="Lost and Found Hub">Supabase</span><span data-used="Lost and Found Hub">PostgreSQL</span><span>Google Colab</span></p></div>
+          <div class="service"><span class="service__n">06</span><h3>Cloud &amp; dev</h3><p class="tools"><span data-used="Debug Odyssey">Docker</span><span data-used="Debug Odyssey, Lost and Found Hub">Git</span><span data-used="Debug Odyssey, Lost and Found Hub">GitHub</span><span>VS Code</span><span>Antigravity</span><span data-used="Lost and Found Hub">Render</span><span data-used="Debug Odyssey">Vercel</span><span>Netlify</span></p></div>
         </div>
         <p class="used" id="ledger-used" aria-live="polite">&nbsp;</p>
       </div>
@@ -223,17 +251,28 @@
       <h2 id="record-title" class="display display--l mask"><span>Record</span></h2>
       <div class="record">
         <article class="glass glass--strong record__card">
-          <p class="micro">Education · Aug 2024 to present</p>
+          <p class="micro">Education · August 2024 to present</p>
           <p class="record__big">8.88<small>/10 CGPA</small></p>
           <h3>SRM Institute of Science and Technology, Ramapuram</h3>
           <p>B.Tech in Computer Science and Engineering</p>
+          <ul class="list list--schools">
+            <li><strong>Chinmaya Vidyalaya <em class="tag tag--quiet">82.8%</em></strong><span>12th Boards · 2022 to 2024</span></li>
+            <li><strong>PCFL-KFI Pathashaala <em class="tag tag--quiet">88.8%</em></strong><span>10th Boards · 2020 to 2022</span></li>
+          </ul>
         </article>
         <article class="glass glass--strong record__card">
           <p class="micro">Hackathons</p>
           <ul class="list">
-            <li><strong>Celestia 2.0, Team why <em class="tag">Finalist</em></strong><span>Debug Odyssey, teaching debugging to beginners (EdTech)</span></li>
-            <li><strong>Sensora 2.0, Team Triple Trouble</strong><span>AuthenSight: intelligent document verification and fraud detection</span></li>
+            <li><strong>Celestia 2.0 <em class="tag">Finalist</em></strong><span>Debug Odyssey, teaching debugging to beginners (EdTech)</span></li>
+            <li><strong>Sensora 2.0</strong><span>Worked on AuthenSight for intelligent document verification and fraud detection</span></li>
             <li><strong>Adobe University Hackathon 2026</strong><span>Participated in the Brand Visibility case-study round</span></li>
+          </ul>
+        </article>
+        <article class="glass glass--strong record__card">
+          <p class="micro">Certifications</p>
+          <ul class="list">
+            <li><strong>Computer Networks</strong><span>Computer Communications and Networks, Saylor</span></li>
+            <li><strong>Machine Learning A-Z [2026] <em class="tag tag--quiet">In progress</em></strong><span>ML, DL, AI with AWS, Python &amp; R, by Kirill Eremenko</span></li>
           </ul>
         </article>
         <article class="glass glass--strong record__card">
@@ -263,7 +302,6 @@
         <ul class="contact__links">
           <li><a href="https://github.com/Nintrophix" target="_blank" rel="noopener noreferrer"><span class="micro">GitHub</span><strong>Nintrophix</strong></a></li>
           <li><a href="https://www.linkedin.com/in/krithiv-shankar" target="_blank" rel="noopener noreferrer"><span class="micro">LinkedIn</span><strong>krithiv-shankar</strong></a></li>
-          <li><a href="tel:+919243118671"><span class="micro">Phone</span><strong>92431 18671</strong></a></li>
           <li><a href="/Krithiv_Shankar_Resume.pdf" download><span class="micro">Résumé</span><strong>Download PDF</strong></a></li>
         </ul>
       </div>
