@@ -26,7 +26,7 @@ He builds software across computer vision (measuring metal parts from camera fra
 
 ## Capabilities and Constraints
 
-- Contact on the site: krithiv.shankar@gmail.com, github.com/Nintrophix, linkedin.com/in/krithiv-shankar. **The phone number must not appear on the site** (user instruction, 2026-11-12).
+- Contact on the site: krithiv.shankar@gmail.com, github.com/Nintrophix, linkedin.com/in/krithiv-shankar. **The phone number must not appear on the page itself** (user instruction, 2026-11-12); the downloadable résumé PDF in public/ is the full current résumé and does include it, by the user's choice.
 - Project links: Friday https://github.com/Nintrophix/Friday; Debug Odyssey https://bug-labs-beta-pink.vercel.app/; Lost and Found Hub https://lost-found-hub-4grb.onrender.com/ and https://github.com/Nintrophix/Lost-Found-Hub.
 - Facts come only from the current resume (Krithiv_Shankar_Resume.pdf, Nov 2026). It no longer mentions G-code, a 50-level campaign, or the Irontronics impact lines; do not reintroduce them.
 
