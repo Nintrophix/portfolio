@@ -2,6 +2,16 @@
 
 A running log of changes to the portfolio. Newest first. Dates are in YYYY-MM-DD format.
 
+## 2026-11-16: Night valley
+
+- Rebuilt the site in React, TypeScript and Tailwind, dark only.
+- Added a living liquid-gradient background, film grain, and a mountain hero lit by the pointer.
+- A river now draws itself down the page as you scroll and ends in the pond that holds the contact section.
+- Added cinematic text reveals on the name, chapter titles and project names, and a pinned statement section.
+- Added a custom cursor and a custom scrollbar at the middle of the right edge (desktop only).
+- Kept every interactive piece: the scan bench, the decoder, the pipelines and the skills ledger.
+- Removed the light theme switcher.
+
 ## 2026-11-12: November 2026 résumé
 
 - Replaced the downloadable résumé (`public/Krithiv_Shankar_Resume.pdf`) with the November 2026 version.

@@ -16,7 +16,7 @@ function makeFrame(seed) {
   const r = rng(seed);
   const cv = document.createElement('canvas');
   cv.width = PW; cv.height = PH;
-  const g = cv.getContext('2d');
+  const g = cv.getContext('2d', { willReadFrequently: true });
 
   g.fillStyle = '#284727'; g.fillRect(0, 0, PW, PH);
 
@@ -82,7 +82,7 @@ function makeFrame(seed) {
 
 /* ---------- pipeline ---------- */
 function process(frame) {
-  const d = frame.getContext('2d').getImageData(0, 0, PW, PH).data;
+  const d = frame.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, PW, PH).data;
   const gray = new Float32Array(PW * PH);
   for (let i = 0; i < PW * PH; i++) gray[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
 
@@ -225,6 +225,8 @@ function hl(line) {
 
 /* ---------- the bench UI ---------- */
 export function initBench(root) {
+  const ac = new AbortController();
+  const on = { signal: ac.signal };
   const canvas = root.querySelector('#rig-canvas');
   const ctx = canvas.getContext('2d');
   const readout = root.querySelector('#rig-readout');
@@ -404,25 +406,29 @@ export function initBench(root) {
     running = true; runBtn.disabled = true; newBtn.disabled = true;
     out.innerHTML = '';
     for (let st = 0; st < 5; st++) {
+      if (ac.signal.aborted) return;
       await setStage(st, { animate: true });
       await new Promise((r) => setTimeout(r, reduced ? 0 : 380));
     }
     out.parentElement.scrollTop = 0;
     running = false; runBtn.disabled = false; newBtn.disabled = false;
-    { const r = runBtn.querySelector('.btn__roll'); r.dataset.label = 'Run it again'; r.querySelector('.btn__txt').textContent = 'Run it again'; }
+    runBtn.querySelectorAll('[data-roll]').forEach((el) => { el.textContent = 'Run it again'; });
   }
 
-  steps.forEach((b, i) => b.addEventListener('click', () => { if (!running) setStage(i, { animate: true }); }));
-  runBtn.addEventListener('click', run);
-  newBtn.addEventListener('click', () => { if (running) return; seed = (Math.random() * 1e9) | 0; load(); setStage(0); });
+  steps.forEach((b, i) => b.addEventListener('click', () => { if (!running) setStage(i, { animate: true }); }, on));
+  runBtn.addEventListener('click', run, on);
+  newBtn.addEventListener('click', () => { if (running) return; seed = (Math.random() * 1e9) | 0; load(); setStage(0); }, on);
 
   load();
   setStage(0);
   if (document.fonts) document.fonts.ready.then(() => render(stage, 1));
 
   // run once, the first time the bench scrolls into view
+  let kick = 0;
   const io = new IntersectionObserver((es) => {
-    if (es.some((e) => e.isIntersecting)) { io.disconnect(); setTimeout(run, 400); }
+    if (es.some((e) => e.isIntersecting)) { io.disconnect(); kick = setTimeout(run, 400); }
   }, { threshold: 0.5 });
   io.observe(canvas);
+
+  return () => { ac.abort(); io.disconnect(); clearTimeout(kick); cancelAnimationFrame(anim); running = false; };
 }

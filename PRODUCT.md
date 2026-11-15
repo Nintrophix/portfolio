@@ -10,7 +10,7 @@ web
 
 ## Stack
 
-delegated: Vite + vanilla JS/CSS (no framework). Static output, fast, a canvas-driven signature piece needs no React runtime; deployable to any static host. *(inferred)*
+Vite + React 18 + TypeScript + Tailwind v4, framer-motion for motion, three.js for the hero scene. Static output, deployable to any static host.
 
 ## Users
 

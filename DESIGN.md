@@ -1,15 +1,46 @@
-# Design System: Krithiv Shankar
+# Design System: Krithiv Shankar (night valley)
 
-The source of truth is the **Krithiv Shankar Design System** artifact:
-https://claude.ai/artifact/7JVXCWopK1tum8Wf76bJd8
+Implemented in React + Tailwind v4 (`src/index.css`, brand scale in `@theme`). The site is one dark world: the visitor descends from a mountain range, follows a river past the work, and reaches still water where the contact lives.
 
-This site implements it in plain CSS (`src/style.css`, tokens on `:root`). Summary:
+## Colour
 
-- **Colour:** one hue only, the green scale `--green-50` to `--green-950`. Page `green-100`, text `green-900`, muted `green-700`, emphasis `green-600`. Deep section (Projects) `green-900`, footer `green-950`. Solid fills only, with one deliberate exception: the page background is the **Jade Sky** gradient from 21st.dev (@serafimcloud/jade-sky; #EEF6E3, #B7D98E, #7FBF9A, #CFE9F0), fixed to the viewport behind the glass.
-- **Themes:** light (default above) and dark, both from the same green scale. Dark: ground `green-950`, ink `green-50`, muted `green-300`, actions flip to `green-200` on `green-950`, glass `rgba(23,48,26,.72)`, a night Jade Sky in deep greens. A squared 40px switcher in the nav (sun/moon, label rolls) saves the choice in localStorage and follows the system setting until one is picked; an inline head script applies it before first paint.
-- **Glass:** panels, cards and the nav are frosted glass (`--glass-bg` / `--glass-bg-strong`, 22px blur, 140% saturate, 1px white edge) sitting over solid green orbs that drift on scroll.
-- **Type:** Archivo 900 at 125% width, all caps, 0.86 leading for display. Space Grotesk for body (15px), lead (18px), and small tracked uppercase labels (11px).
-- **Buttons:** squared 6px radius, solid `green-800`, one step lighter on hover, rolling label. Never pills.
-- **Radii:** 6 buttons, 18 images and stages, 20 nav, 28 cards, 36 panels and section tops.
-- **Motion:** expo easing; load intro (letter rise, four-shade line, upward wipe); masked heading slide-ups; scroll-linked outline/solid name bands; orb parallax; scrambling nav labels. All skipped under reduced motion. No custom cursors, no hover scaling.
-- **Copy:** no em dashes, no emoji, no invented metrics.
+- One hue family, the green scale `green-50` to `green-950` (Tailwind `green-*` is overridden with the brand values).
+- Ground `#0A1610` (`night`). Ink `green-50`, body `green-100`, muted `green-300`.
+- One light source: jade `#7FD1B9` (soft `#B2E6D2`). Used for the river, focus rings, active states, small labels. Never as large fills.
+- Rules are hairlines: `rgba(211,226,204,.14)` and `.28`. No coloured side borders.
+- Dark only. The old light theme and switcher are retired.
+
+## Atmosphere
+
+- **Liquid gradient** (`components/fx/liquid-gradient.tsx`): fixed WebGL field, domain-warped fbm in green-950/900/800 with jade folds, vignette, dither. Renders at 42% resolution, follows the pointer and scroll slowly, pauses when hidden, one still frame under reduced motion.
+- **Grain**: static SVG noise, overlay blend, 4.5% opacity.
+- **Mountains** (`components/ui/mountain-scene.tsx`): three.js range behind the hero under a lit dawn horizon, pale jade rim light that follows the pointer, sage haze on the far ridges. Pauses off screen.
+- **River** (`components/ui/svg-follow-scroll.tsx`): a 2px jade stroke with a faint blurred glow, drawn by scroll behind every chapter, keeping to the margins.
+- **Pond** (`components/ui/river-pond.tsx`): deep green water that holds the contact section and footer.
+
+## Type
+
+Swiss-minimal, after the ui-ux-pro-max "Minimalism & Swiss Style" direction, keeping the Archivo + Space Grotesk pairing.
+
+- Display: Archivo at normal width, weight 560 on the variable wght axis, sentence case, -0.03em tracking, 1.0 to 1.1 leading. Name 44 to 112px, chapter titles 32 to 52px, project names 30 to 48px, role titles 22 to 30px.
+- Body: Space Grotesk, 16px, lead 17 to 19px. Labels 12 to 14px, weight 500, sentence case. No uppercase, no outline type.
+- Mono only for code and measurements.
+
+## Components
+
+- Buttons: 8px radius, 15px sentence-case label, solid `green-100` on dark or hairline outline, rolling label on hover.
+- Lists and ledgers over cards: hairline rows (facts, skills ledger, record, contact links). The scan bench and decoder are the only framed panels.
+
+## Motion
+
+- Easing: expo out `cubic-bezier(.16,1,.3,1)`.
+- Weight bloom (text reveal, timing from the 21st.dev Cinematic Product Scroll Section): letters of the name and words of each title open from wght 150 to 560 while coming into focus. No position change, no masks.
+- Rising terrain: on load the mountain range grows out of flat ground over 2.8s while a dawn horizon fades up behind it.
+- Statement: pinned for 300vh; each clause gains weight (180 to 520) and ink at its own scroll threshold.
+- Cursor (adapted from 21st.dev Custom Cursor): exact dot plus a spring ring that grows over controls and shows a short label ("Open", "Write") offset from the pointer. Fine pointers only.
+- Scroll rail: custom scrollbar fixed at the middle of the right edge, exact thumb, drag, track click, keyboard, chapter ticks. Fine pointers at 768px and up; elsewhere the native bar.
+- Reduced motion: every ambient effect stops; content is visible immediately.
+
+## Copy
+
+No em dashes, no emoji, no invented metrics. Facts only from the current résumé; the phone number never appears on the page.
