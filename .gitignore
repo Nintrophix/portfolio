@@ -1,7 +1,7 @@
 node_modules
 dist
-.impeccable/review
-.impeccable/live
+.impeccable/
+.claude/
 
 # Logs and caches
 *.log
